@@ -343,8 +343,12 @@ async def main():
     print(f"Starting on port {PORT}...")
     print(f"Connect via ws://localhost:{PORT}")
 
-    async with websockets.serve(server.handler, "localhost", PORT):
-        print(f"Server running! Waiting for players...")
+    # Bind 0.0.0.0 so Android emulator (10.0.2.2) and LAN devices can connect.
+    # CLI/web clients still use ws://localhost:8765 on the same machine.
+    async with websockets.serve(server.handler, "0.0.0.0", PORT):
+        print(f"Server running on 0.0.0.0:{PORT}! Waiting for players...")
+        print(f"  Emulator:  ws://10.0.2.2:{PORT}")
+        print(f"  LAN phone: ws://<YOUR_LAN_IP>:{PORT}")
         await asyncio.Future()  # run forever
 
 if __name__ == "__main__":
